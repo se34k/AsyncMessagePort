@@ -14,7 +14,9 @@ export class AsyncMessagePort {
         this.#port.onmessage = (e) => {
             const answer = new AsyncMessage(e.data.msgId, e.data.msg, this);
             if (e.data.refId !== null) {
-                this.#listeners.get(e.data.refId)[0](answer);
+                const listener = this.#listeners.get(e.data.refId);
+                this.#listeners.delete(e.data.refId);
+                listener[0](answer);
             } else {
                 for (let listener of this.#genericListeners) {
                     listener(answer);
